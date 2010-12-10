@@ -14,7 +14,14 @@ class CreditVision(object):
         return response.read()
 
     def add(self):
-        """http://www.icreditvision.com/cvwrapi/add.html"""
+        """Request the creation of credit report.
+
+           Successful requests return an xml document with 2 relevant fields,
+           CONTROLNO and DCONTROLNO_KEY.  These fields should be saved as they
+           will be required to view the actual report after it is generated.
+
+           http://www.icreditvision.com/cvwrapi/add.html"""
+
         required_fields = dict(source="api",
                                top="Process",
                                bottom="Process",
@@ -33,11 +40,16 @@ class CreditVision(object):
         data.update(self.credentials)
         data.update(required_fields)
         data.update(sample_customer)
-        """returns 4853091 3706304"""
+
         return self.retrieve_url(self.base_url, urlencode(data))
 
     def view(self, controlno="4853296", dcontrolno_key="370651"):
-        """This is REALLY slow. as long as 60 seconds."""
+        """View a credit report.
+
+           Retrieves the credit report by controlno/dcontrolno_key.  Bad
+           combinations return credit reports with empty values for all fields.
+
+           This is REALLY slow. as long as 60 seconds."""
         format = dict(formatHTML="N",
                       formatXML="Y",
                       formatMISMO="N",
