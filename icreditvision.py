@@ -30,6 +30,9 @@ class TransUnionUser(dict):
                   % ", ".join(self.required_keys)
             raise Exception, msg
 
+    def _validate_a_ssno(self):
+        pass
+
 
 class ICreditVision(object):
     """Python interface for the iCreditVision API.
