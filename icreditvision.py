@@ -83,9 +83,9 @@ class ICreditVision(object):
         data = dict(mode="add", **self.credentials)
         data.update(required_fields)
         data.update(transunion_user)
-        return self._retrieve_url(self.base_url, urlencode(data))
+        return xmltodict(self._retrieve_url(self.base_url, urlencode(data)))
 
-    def view(self, controlno="4853296", dcontrolno_key="370651"):
+    def view(self, controlno, dcontrolno_key):
         """View a credit report.
 
            Retrieves the credit report by controlno/dcontrolno_key.  Bad
@@ -103,9 +103,9 @@ class ICreditVision(object):
         data.update(format)
         data['controlno'] = controlno
         data['dcontrolno_key'] = dcontrolno_key
-        return self._retrieve_url(self.base_url, urlencode(data))
+        return xmltodict(self._retrieve_url(self.base_url, urlencode(data)))
 
-    def status(self, controlno="4853296", dcontrolno_key="370651"):
+    def status(self, controlno, dcontrolno_key):
         """Determine a report status.
 
            Query iCreditVision to determine if a report has finished processing.
@@ -120,7 +120,7 @@ class ICreditVision(object):
         data['xmlresponse'] = "Y"
         data['controlno'] = controlno
         data['dcontrolno_key'] = dcontrolno_key
-        return self._retrieve_url(self.base_url, urlencode(data))
+        return xmltodict(self._retrieve_url(self.base_url, urlencode(data)))
 
     def list(self):
         """Retrieve a "remote document list".
@@ -145,11 +145,9 @@ sample_customer = TransUnionUser(a_lname="AKACOMMON",
                                  ca_state="IL",
                                  ca_zip="60750",
                                 )
-api = CreditVision()
-codes_raw = api.add(sample_customer)
+api = ICreditVision()
 
-report_raw = api.view()
-report_dict = xmltodict(report_raw)
+codes = api.add(sample_customer)
+report = api.view(controlno="4853296", dcontrolno_key="370651")
+status = api.status(controlno="4853296", dcontrolno_key="370651")
 
-status_raw = api.status()
-status_dict = xmltodict(status_raw)
