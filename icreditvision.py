@@ -7,7 +7,7 @@ class TransUnionUser(dict):
     """A dictionary containing TransUnion user details.
 
        Exists primarily to enforce minimum requirements for
-       transunion to process credit requests.
+       TransUnion to process credit requests.
     """
 
     required_keys = ["a_lname",
@@ -26,7 +26,7 @@ class TransUnionUser(dict):
 
     def _validate(self):
         if not all(map(lambda x: x in self.keys(), self.required_keys)):
-            msg = "Transunion user requires the following keys: %s" \
+            msg = "TransUnion user requires the following keys: %s" \
                   % ", ".join(self.required_keys)
             raise Exception, msg
 
@@ -46,7 +46,7 @@ class CreditVision(object):
         """Request the creation of credit report.
 
            Input:
-           TransunionUser object -- subclass of dict that requires TU fields.
+           TransUnionUser object -- subclass of dict that requires TU fields.
 
            Output:
            Successful requests return an xml document with 2 relevant fields,
