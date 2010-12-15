@@ -42,9 +42,13 @@ class CreditVision(object):
         response = urllib2.urlopen(request)
         return response.read()
 
-    def add(self):
+    def add(self, transunion_user):
         """Request the creation of credit report.
 
+           Input:
+           TransunionUser object -- subclass of dict that requires TU fields.
+
+           Output:
            Successful requests return an xml document with 2 relevant fields,
            CONTROLNO and DCONTROLNO_KEY.  These fields should be saved as they
            will be required to view the actual report after it is generated.
@@ -56,20 +60,10 @@ class CreditVision(object):
                                bottom="Process",
                                a_tu="Y",
                               )
-        sample_customer = dict(a_lname="AKACOMMON",
-                               a_fname="SILVIA",
-                               a_ssno="435-70-9958",
-                               ca_house="9",
-                               ca_street_name="98TH+DR",
-                               ca_city="FANTASY+ISLAND",
-                               ca_state="IL",
-                               ca_zip="60750",
-                              )
         data = dict(mode="add")
         data.update(self.credentials)
         data.update(required_fields)
-        data.update(sample_customer)
-
+        data.update(transunion_user)
         return self.retrieve_url(self.base_url, urlencode(data))
 
     def view(self, controlno="4853296", dcontrolno_key="370651"):
@@ -97,7 +91,12 @@ class CreditVision(object):
         """Determine a report status.
 
            Query iCreditVision to determine if a report has finished processing.
-           iCreditVision returns a numeric status code"""
+           iCreditVision returns a numeric status code
+
+           Possible return codes:
+               StatusCode < 0 ; Error.
+               StatusCode = 1 ; Status is pending. Need to poll again later.
+               StatusCode = 2 ; Report is ready."""
 
         data = dict(mode="status")
         data.update(self.credentials)
@@ -121,8 +120,17 @@ class CreditVision(object):
         data.update(self.credentials)
         return self.retrieve_url(self.base_url, urlencode(data))
 
-#api = CreditVision()
-#codes_raw = api.add()
+sample_customer = TransUnionUser(a_lname="AKACOMMON",
+                                 a_fname="SILVIA",
+                                 a_ssno="435-70-9958",
+                                 ca_house="9",
+                                 ca_street_name="98TH+DR",
+                                 ca_city="FANTASY+ISLAND",
+                                 ca_state="IL",
+                                 ca_zip="60750",
+                                )
+api = CreditVision()
+codes_raw = api.add(sample_customer)
 
 #report_raw = api.view()
 #report_dict = xmltodict(report_raw)
