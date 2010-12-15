@@ -2,6 +2,7 @@ import urllib2
 from urllib import urlencode
 from xmltodict import xmltodict
 
+
 class CreditVision(object):
     base_url = "https://www.icreditvisions.com/cgi-bin/query.pl"
     def __init__(self, login="leaselycom1", password="zliu1142"):
@@ -63,8 +64,17 @@ class CreditVision(object):
         data['dcontrolno_key'] = dcontrolno_key
         return self.retrieve_url(self.base_url, urlencode(data))
 
-    def status(self):
-        pass
+    def status(self, controlno="4853296", dcontrolno_key="370651"):
+        """Determine a report status.
+
+        Query iCreditVision to determine if a report has finished processing.
+        iCreditVision returns a numeric status code"""
+        data = dict(mode="status")
+        data.update(self.credentials)
+        data['xmlresponse'] = "Y"
+        data['controlno'] = controlno
+        data['dcontrolno_key'] = dcontrolno_key
+        return self.retrieve_url(self.base_url, urlencode(data))
 
     def list(self):
         """Retrieve a "remote document list".
@@ -86,3 +96,6 @@ codes_raw = api.add()
 
 report_raw = api.view()
 report_dict = xmltodict(report_raw)
+
+status_raw = api.status()
+status_dict = xmltodict(status_raw)
