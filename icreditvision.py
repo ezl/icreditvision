@@ -31,7 +31,26 @@ class TransUnionUser(dict):
             raise Exception, msg
 
 
-class CreditVision(object):
+class ICreditVision(object):
+    """Python interface for the iCreditVision API.
+
+       Each public method corresponds to a query type from the iCreditVision API.
+
+       add(transunion_user):
+           request report be run for the transunion_user
+
+       status(controlno, dcontrolno_key):
+           check on the status of a report
+
+       view(controlno, dcontrolno_key):
+           view a report
+
+       list():
+           list all reports (not yet implemented)
+
+       iCreditVision docs
+       http://www.icreditvision.com/cvwrapi/"""
+
     base_url = "https://www.icreditvisions.com/cgi-bin/query.pl"
     def __init__(self, login="leaselycom1", password="zliu1142"):
         self.credentials = dict(login=login, password=password)
