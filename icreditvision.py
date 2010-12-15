@@ -56,7 +56,7 @@ class ICreditVision(object):
         self.credentials = dict(login=login, password=password)
 
     @staticmethod
-    def retrieve_url(url, data=None):
+    def _retrieve_url(url, data=None):
         request = urllib2.Request(url, data)
         response = urllib2.urlopen(request)
         return response.read()
@@ -83,7 +83,7 @@ class ICreditVision(object):
         data.update(self.credentials)
         data.update(required_fields)
         data.update(transunion_user)
-        return self.retrieve_url(self.base_url, urlencode(data))
+        return self._retrieve_url(self.base_url, urlencode(data))
 
     def view(self, controlno="4853296", dcontrolno_key="370651"):
         """View a credit report.
@@ -104,7 +104,7 @@ class ICreditVision(object):
         data.update(format)
         data['controlno'] = controlno
         data['dcontrolno_key'] = dcontrolno_key
-        return self.retrieve_url(self.base_url, urlencode(data))
+        return self._retrieve_url(self.base_url, urlencode(data))
 
     def status(self, controlno="4853296", dcontrolno_key="370651"):
         """Determine a report status.
@@ -122,7 +122,7 @@ class ICreditVision(object):
         data['xmlresponse'] = "Y"
         data['controlno'] = controlno
         data['dcontrolno_key'] = dcontrolno_key
-        return self.retrieve_url(self.base_url, urlencode(data))
+        return self._retrieve_url(self.base_url, urlencode(data))
 
     def list(self):
         """Retrieve a "remote document list".
@@ -137,7 +137,7 @@ class ICreditVision(object):
         # for the list page.
         data = dict(mode="list")
         data.update(self.credentials)
-        return self.retrieve_url(self.base_url, urlencode(data))
+        return self._retrieve_url(self.base_url, urlencode(data))
 
 sample_customer = TransUnionUser(a_lname="AKACOMMON",
                                  a_fname="SILVIA",
