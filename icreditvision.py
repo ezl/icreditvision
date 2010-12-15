@@ -67,7 +67,19 @@ class CreditVision(object):
         pass
 
     def list(self):
-        pass
+        """Retrieve a "remote document list".
+
+        Returns a list of all reports that the user has previously pulled. """
+
+        # TODO: This doesn't quite work yet.
+        # List returns an html page that redirects to another html page
+        # that lists the pulled documents.
+
+        # Need to handle the redirect, then write a parser
+        # for the list page.
+        data = dict(mode="list")
+        data.update(self.credentials)
+        return self.retrieve_url(self.base_url, urlencode(data))
 
 api = CreditVision()
 codes_raw = api.add()
