@@ -73,4 +73,4 @@ api = CreditVision()
 codes_raw = api.add()
 
 report_raw = api.view()
-report_dict = xmltodict(report)
+report_dict = xmltodict(report_raw)
