@@ -52,6 +52,7 @@ class ICreditVision(object):
        http://www.icreditvision.com/cvwrapi/"""
 
     base_url = "https://www.icreditvisions.com/cgi-bin/query.pl"
+
     def __init__(self, login="leaselycom1", password="zliu1142"):
         self.credentials = dict(login=login, password=password)
 
@@ -79,8 +80,7 @@ class ICreditVision(object):
                                bottom="Process",
                                a_tu="Y",
                               )
-        data = dict(mode="add")
-        data.update(self.credentials)
+        data = dict(mode="add", **self.credentials)
         data.update(required_fields)
         data.update(transunion_user)
         return self._retrieve_url(self.base_url, urlencode(data))
@@ -99,8 +99,7 @@ class ICreditVision(object):
                       formatASCII="N",
                       formatPDF="N",
                      )
-        data = dict(mode="view")
-        data.update(self.credentials)
+        data = dict(mode="view", **self.credentials)
         data.update(format)
         data['controlno'] = controlno
         data['dcontrolno_key'] = dcontrolno_key
@@ -117,8 +116,7 @@ class ICreditVision(object):
                StatusCode = 1 ; Status is pending. Need to poll again later.
                StatusCode = 2 ; Report is ready."""
 
-        data = dict(mode="status")
-        data.update(self.credentials)
+        data = dict(mode="status", **self.credentials)
         data['xmlresponse'] = "Y"
         data['controlno'] = controlno
         data['dcontrolno_key'] = dcontrolno_key
@@ -135,8 +133,7 @@ class ICreditVision(object):
 
         # Need to handle the redirect, then write a parser
         # for the list page.
-        data = dict(mode="list")
-        data.update(self.credentials)
+        data = dict(mode="list", **self.credentials)
         return self._retrieve_url(self.base_url, urlencode(data))
 
 sample_customer = TransUnionUser(a_lname="AKACOMMON",
@@ -151,8 +148,8 @@ sample_customer = TransUnionUser(a_lname="AKACOMMON",
 api = CreditVision()
 codes_raw = api.add(sample_customer)
 
-#report_raw = api.view()
-#report_dict = xmltodict(report_raw)
+report_raw = api.view()
+report_dict = xmltodict(report_raw)
 
-#status_raw = api.status()
-#status_dict = xmltodict(status_raw)
+status_raw = api.status()
+status_dict = xmltodict(status_raw)
