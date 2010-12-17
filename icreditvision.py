@@ -59,9 +59,10 @@ class ICreditVision(object):
     def __init__(self, login="leaselycom1", password="zliu1142"):
         self.credentials = dict(login=login, password=password)
 
-    @staticmethod
-    def _retrieve_url(url, data=None):
-        request = urllib2.Request(url, data)
+
+    def _retrieve_url(self, url, data=None):
+        data.update(self.credentials)
+        request = urllib2.Request(url, urlencode(data))
         response = urllib2.urlopen(request)
         return response.read()
 
@@ -83,10 +84,10 @@ class ICreditVision(object):
                                bottom="Process",
                                a_tu="Y",
                               )
-        data = dict(mode="add", **self.credentials)
+        data = dict(mode="add")
         data.update(required_fields)
         data.update(transunion_user)
-        return xmltodict(self._retrieve_url(self.base_url, urlencode(data)))
+        return xmltodict(self._retrieve_url(self.base_url, data))
 
     def view(self, controlno, dcontrolno_key):
         """View a credit report.
@@ -102,11 +103,11 @@ class ICreditVision(object):
                       formatASCII="N",
                       formatPDF="N",
                      )
-        data = dict(mode="view", **self.credentials)
+        data = dict(mode="view")
         data.update(format)
         data['controlno'] = controlno
         data['dcontrolno_key'] = dcontrolno_key
-        return xmltodict(self._retrieve_url(self.base_url, urlencode(data)))
+        return xmltodict(self._retrieve_url(self.base_url, data))
 
     def status(self, controlno, dcontrolno_key):
         """Determine a report status.
@@ -119,11 +120,11 @@ class ICreditVision(object):
                StatusCode = 1 ; Status is pending. Need to poll again later.
                StatusCode = 2 ; Report is ready."""
 
-        data = dict(mode="status", **self.credentials)
+        data = dict(mode="status")
         data['xmlresponse'] = "Y"
         data['controlno'] = controlno
         data['dcontrolno_key'] = dcontrolno_key
-        return xmltodict(self._retrieve_url(self.base_url, urlencode(data)))
+        return xmltodict(self._retrieve_url(self.base_url, data))
 
     def list(self):
         """Retrieve a "remote document list".
