@@ -54,15 +54,13 @@ class ICreditVision(object):
        iCreditVision docs
        http://www.icreditvision.com/cvwrapi/"""
 
-    base_url = "https://www.icreditvisions.com/cgi-bin/query.pl"
-
     def __init__(self, login="leaselycom1", password="zliu1142"):
         self.credentials = dict(login=login, password=password)
+        self.base_url = "https://www.icreditvisions.com/cgi-bin/query.pl"
 
-
-    def _retrieve_url(self, url, data=None):
+    def _retrieve(self, data={}):
         data.update(self.credentials)
-        request = urllib2.Request(url, urlencode(data))
+        request = urllib2.Request(self.base_url, urlencode(data))
         response = urllib2.urlopen(request)
         return response.read()
 
@@ -87,7 +85,7 @@ class ICreditVision(object):
         data = dict(mode="add")
         data.update(required_fields)
         data.update(transunion_user)
-        return xmltodict(self._retrieve_url(self.base_url, data))
+        return xmltodict(self._retrieve(data))
 
     def view(self, controlno, dcontrolno_key):
         """View a credit report.
@@ -107,7 +105,7 @@ class ICreditVision(object):
         data.update(format)
         data['controlno'] = controlno
         data['dcontrolno_key'] = dcontrolno_key
-        return xmltodict(self._retrieve_url(self.base_url, data))
+        return xmltodict(self._retrieve(data))
 
     def status(self, controlno, dcontrolno_key):
         """Determine a report status.
@@ -124,7 +122,7 @@ class ICreditVision(object):
         data['xmlresponse'] = "Y"
         data['controlno'] = controlno
         data['dcontrolno_key'] = dcontrolno_key
-        return xmltodict(self._retrieve_url(self.base_url, data))
+        return xmltodict(self._retrieve(data))
 
     def list(self):
         """Retrieve a "remote document list".
@@ -138,7 +136,7 @@ class ICreditVision(object):
         # Need to handle the redirect, then write a parser
         # for the list page.
         data = dict(mode="list")
-        return self._retrieve_url(self.base_url, data)
+        return self._retrieve(data)
 
 
 if __name__ == '__main__':
@@ -164,4 +162,3 @@ if __name__ == '__main__':
     print 'testing view mode...'
     report = api.view(controlno="4853296", dcontrolno_key="370651")
     print report
-
