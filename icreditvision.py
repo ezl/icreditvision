@@ -1,4 +1,5 @@
 import urllib2
+from pprint import pprint
 from urllib import urlencode
 from xmltodict import xmltodict
 
@@ -161,4 +162,5 @@ if __name__ == '__main__':
 
     print 'testing view mode...'
     report = api.view(controlno="4853296", dcontrolno_key="370651")
-    print report
+    pprint(report)
+
