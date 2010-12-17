@@ -62,8 +62,10 @@ class ICreditVision(object):
     def _retrieve(self, data={}):
         data.update(self.credentials)
         request = urllib2.Request(self.base_url, urlencode(data))
-        response = urllib2.urlopen(request)
-        return response.read()
+        response = urllib2.urlopen(request).read()
+        # lowercase strings as keys so we can pass the return values to the
+        # other functions as kwargs.
+        return dict(((str(k).lower(), v) for k, v in xmltodict(response).items()))
 
     def add(self, transunion_user):
         """Request the creation of credit report.
@@ -86,7 +88,7 @@ class ICreditVision(object):
         data = dict(mode="add")
         data.update(required_fields)
         data.update(transunion_user)
-        return xmltodict(self._retrieve(data))
+        return self._retrieve(data)
 
     def view(self, controlno, dcontrolno_key):
         """View a credit report.
@@ -106,7 +108,7 @@ class ICreditVision(object):
         data.update(format)
         data['controlno'] = controlno
         data['dcontrolno_key'] = dcontrolno_key
-        return xmltodict(self._retrieve(data))
+        return self._retrieve(data)
 
     def status(self, controlno, dcontrolno_key):
         """Determine a report status.
@@ -123,7 +125,7 @@ class ICreditVision(object):
         data['xmlresponse'] = "Y"
         data['controlno'] = controlno
         data['dcontrolno_key'] = dcontrolno_key
-        return xmltodict(self._retrieve(data))
+        return self._retrieve(data)
 
     def list(self):
         """Retrieve a "remote document list".
@@ -157,10 +159,15 @@ if __name__ == '__main__':
     print codes
 
     print 'testing status mode...'
-    status = api.status(controlno="4853296", dcontrolno_key="370651")
-    print status
+    while True:
+        status = api.status(**codes)
+        print status
+        if status['statuscode'] == u'2':
+            break
+        from time import sleep
+        sleep(2)
 
     print 'testing view mode...'
-    report = api.view(controlno="4853296", dcontrolno_key="370651")
+    report = api.view(**codes)
     pprint(report)
 
