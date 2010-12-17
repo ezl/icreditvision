@@ -137,8 +137,8 @@ class ICreditVision(object):
 
         # Need to handle the redirect, then write a parser
         # for the list page.
-        data = dict(mode="list", **self.credentials)
-        return self._retrieve_url(self.base_url, urlencode(data))
+        data = dict(mode="list")
+        return self._retrieve_url(self.base_url, data)
 
 
 if __name__ == '__main__':
