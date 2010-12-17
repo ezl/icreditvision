@@ -139,18 +139,28 @@ class ICreditVision(object):
         data = dict(mode="list", **self.credentials)
         return self._retrieve_url(self.base_url, urlencode(data))
 
-sample_customer = TransUnionUser(a_lname="AKACOMMON",
-                                 a_fname="SILVIA",
-                                 a_ssno="435-70-9958",
-                                 ca_house="9",
-                                 ca_street_name="98TH+DR",
-                                 ca_city="FANTASY+ISLAND",
-                                 ca_state="IL",
-                                 ca_zip="60750",
-                                )
-api = ICreditVision()
 
-codes = api.add(sample_customer)
-report = api.view(controlno="4853296", dcontrolno_key="370651")
-status = api.status(controlno="4853296", dcontrolno_key="370651")
+if __name__ == '__main__':
+    sample_customer = TransUnionUser(a_lname="AKACOMMON",
+                                     a_fname="SILVIA",
+                                     a_ssno="435-70-9958",
+                                     ca_house="9",
+                                     ca_street_name="98TH+DR",
+                                     ca_city="FANTASY+ISLAND",
+                                     ca_state="IL",
+                                     ca_zip="60750",
+                                    )
+    api = ICreditVision()
+
+    print 'testing add mode...'
+    codes = api.add(sample_customer)
+    print codes
+
+    print 'testing status mode...'
+    status = api.status(controlno="4853296", dcontrolno_key="370651")
+    print status
+
+    print 'testing view mode...'
+    report = api.view(controlno="4853296", dcontrolno_key="370651")
+    print report
 
